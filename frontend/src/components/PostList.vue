@@ -2,7 +2,7 @@
     <button @click="getPosts">Refresh</button>
     <ul>
         <li v-for="post in posts" :key="post.id" data-test="post">
-            {{ post.title }}
+            {{ post.description }}
         </li>
     </ul>
 </template>
