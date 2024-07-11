@@ -10,10 +10,11 @@
   },
   "dependencies": {
     "@vue/cli": "^5.0.8",
-    "ant-design-vue": "^4.0.0-rc.6",
     "axios": "^1.7.2",
     "vue": "^3.4.29",
-    "vue-tweet": "^2.3.1"
+    "vue-tweet": "^2.3.1",
+    "apexcharts": "^3.50.0",
+    "vue3-apexcharts": "1.5.3"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",

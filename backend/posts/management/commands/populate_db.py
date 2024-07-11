@@ -9,6 +9,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write(self.style.SUCCESS("Started database population process..."))
         
-        get_data(cursor='', post_type='fan')
+        get_data(cursor='', post_type='branded_without_fans')
         
         self.stdout.write(self.style.SUCCESS("Successfully populated the database."))

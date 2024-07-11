@@ -1,11 +1,13 @@
 <script setup>
 // import HelloWorld from './components/HelloWorld.vue';
-import PostList from './components/PostList.vue';
+import PostList from "./components/PostList.vue";
+import TimeSeriesChart from "./components/TimeSeriesChart.vue";
 </script>
 
 <template>
   <!-- <HelloWorld msg="Vite + Vue" /> -->
   <PostList />
+  <TimeSeriesChart />
 </template>
 
 <style scoped>
