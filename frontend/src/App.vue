@@ -1,11 +1,32 @@
 <script setup>
-// import HelloWorld from './components/HelloWorld.vue';
 import PostList from "./components/PostList.vue";
 import TimeSeriesChart from "./components/TimeSeriesChart.vue";
+import { store } from "./store.js";
+</script>
+
+<script>
+export default {
+  data() {
+    return {
+      options: [
+        { text: "fan", value: "fan" },
+        { text: "stadium", value: "stadium" },
+        { text: "branded", value: "branded_without_fans" },
+      ],
+    };
+  },
+};
 </script>
 
 <template>
-  <!-- <HelloWorld msg="Vite + Vue" /> -->
+  <select
+    v-model="store.postType"
+    @change="store.setPostType($event.target.value)"
+  >
+    <option v-for="option in options" v-bind:value="option.value">
+      {{ option.text }}
+    </option>
+  </select>
   <PostList />
   <TimeSeriesChart />
 </template>

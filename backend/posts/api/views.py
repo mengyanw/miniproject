@@ -53,21 +53,25 @@ def time_series_analysis(posts, trunc_by='day'):
     return result
 
 class PostViewSet(ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.all()[:5]
     serializer_class = PostSerializer
 
     @action(detail=False, methods=['get'])
     def time_series(self, request):
-        posts = Post.objects.all()
+        post_type = request.query_params.get('post_type', 'fan') 
+        posts = Post.objects.filter(post_type=post_type)
         trunc_by = request.query_params.get('trunc_by', 'day')
+
         analysis_result = time_series_analysis(posts, trunc_by)
         return JsonResponse(analysis_result, safe=False)
 
     @action(detail=False, methods=['get'])
     def topN(self, request):
-        neg_posts = Post.objects.filter(sentiment_label="negative").order_by("-engagement")[:3]
-        neu_posts = Post.objects.filter(sentiment_label="neutral").order_by("-engagement")[:3]
-        pos_posts = Post.objects.filter(sentiment_label="positive").order_by("-engagement")[:3]
+        post_type = request.query_params.get('post_type', 'fan') 
+        posts = Post.objects.filter(post_type=post_type)
+        neg_posts = posts.filter(sentiment_label="negative").order_by("-engagement")[:3]
+        neu_posts = posts.filter(sentiment_label="neutral").order_by("-engagement")[:3]
+        pos_posts = posts.filter(sentiment_label="positive").order_by("-engagement")[:3]
 
         transformed_data = {}
         for entry in list(neg_posts) + list(neu_posts) + list(pos_posts):

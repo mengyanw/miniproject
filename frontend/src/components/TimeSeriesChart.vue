@@ -2,18 +2,28 @@
   <div>
     <div class="chart">
       <label for="truncBy">Truncate by:</label>
-      <select v-model="truncBy" @change="getAnalysisData">
+      <select
+        v-model="store.truncBy"
+        @change="store.setTruncBy($event.target.value)"
+      >
         <option value="day">Day</option>
         <option value="week">Week</option>
         <option value="month">Month</option>
       </select>
     </div>
-    <apexchart type="line" :options="chartOptions" :series="series"></apexchart>
+    <apexchart
+      type="line"
+      :options="chartOptions"
+      :series="store.timeSeriesData"
+    ></apexchart>
   </div>
 </template>
 
+<script setup>
+import { store } from "../store.js";
+</script>
+
 <script>
-import axios from "axios";
 import ApexCharts from "vue3-apexcharts";
 
 export default {
@@ -22,9 +32,6 @@ export default {
   },
   data() {
     return {
-      analysisData: [],
-      truncBy: "week", // Default value
-      series: [],
       chartOptions: {
         chart: {
           type: "area",
@@ -64,22 +71,9 @@ export default {
       },
     };
   },
-  methods: {
-    async getAnalysisData() {
-      const response = await axios.get(
-        import.meta.env.VITE_API_URL +
-          `posts/time_series/?trunc_by=${this.truncBy}`,
-      );
-      console.log(response.data);
-      this.analysisData = response.data;
-      this.updateChart();
-    },
-    updateChart() {
-      this.series = this.analysisData;
-    },
-  },
-  mounted() {
-    this.getAnalysisData();
+  methods: {},
+  async mounted() {
+    await store.getTimeSeriesData();
   },
 };
 </script>
