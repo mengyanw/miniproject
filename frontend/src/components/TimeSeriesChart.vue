@@ -1,10 +1,11 @@
 <template>
   <div>
-    <div class="chart">
+    <div style="padding-bottom: 40px">
       <label for="truncBy">Truncate by:</label>
       <select
         v-model="store.truncBy"
         @change="store.setTruncBy($event.target.value)"
+        size="small"
       >
         <option value="day">Day</option>
         <option value="week">Week</option>
@@ -41,9 +42,6 @@ export default {
           type: "datetime",
         },
         yaxis: {
-          title: {
-            text: "Avg Engagement",
-          },
           labels: {
             formatter: function (val) {
               return val.toFixed(0);
@@ -71,16 +69,8 @@ export default {
       },
     };
   },
-  methods: {},
   async mounted() {
     await store.getTimeSeriesData();
   },
 };
 </script>
-
-<style scoped>
-.chart {
-  width: 500px;
-}
-/* Add any necessary styles here */
-</style>

@@ -2,9 +2,9 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from ..models import Post
 from .serializers import PostSerializer
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from datetime import datetime
-from django.db.models import Avg, Count, DateTimeField
+from django.db.models import Avg, Count, Sum, DateTimeField
 from django.db.models.functions import TruncDay, TruncWeek, TruncMonth, Cast
 
 
@@ -58,16 +58,16 @@ class PostViewSet(ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def time_series(self, request):
-        post_type = request.query_params.get('post_type', 'fan') 
+        post_type = request.query_params.get('post_type', 'stadium') 
         posts = Post.objects.filter(post_type=post_type)
-        trunc_by = request.query_params.get('trunc_by', 'day')
+        trunc_by = request.query_params.get('trunc_by', 'week')
 
         analysis_result = time_series_analysis(posts, trunc_by)
         return JsonResponse(analysis_result, safe=False)
 
     @action(detail=False, methods=['get'])
     def topN(self, request):
-        post_type = request.query_params.get('post_type', 'fan') 
+        post_type = request.query_params.get('post_type', 'stadium') 
         posts = Post.objects.filter(post_type=post_type)
         neg_posts = posts.filter(sentiment_label="negative").order_by("-engagement")[:3]
         neu_posts = posts.filter(sentiment_label="neutral").order_by("-engagement")[:3]
@@ -86,4 +86,34 @@ class PostViewSet(ModelViewSet):
                 transformed_data[sentiment_label] = []
             transformed_data[sentiment_label].append(data)
         
+        return JsonResponse(transformed_data, safe=False)
+
+    @action(detail=False, methods=['get'])
+    def post_count(self, request):
+        post_type = request.query_params.get('post_type', 'stadium') 
+        posts = Post.objects.filter(post_type=post_type)
+        aggregated_count = posts.values('sentiment_label').annotate(
+            post_count=Count('medium_id')
+        ).order_by("-sentiment_label")
+        transformed_data = []
+        for entry in aggregated_count:
+            transformed_data.append({
+                'x': entry['sentiment_label'],
+                'y': entry['post_count']
+            })
+        return JsonResponse(transformed_data, safe=False)
+    
+    @action(detail=False, methods=['get'])
+    def total_engagement(self, request):
+        post_type = request.query_params.get('post_type', 'stadium') 
+        posts = Post.objects.filter(post_type=post_type)
+        total = posts.values('sentiment_label').annotate(
+            total_engagement=Sum('engagement')
+        ).order_by("-sentiment_label")
+        transformed_data = []
+        for entry in total:
+            transformed_data.append({
+                'x': entry['sentiment_label'],
+                'y': entry['total_engagement']
+            })
         return JsonResponse(transformed_data, safe=False)

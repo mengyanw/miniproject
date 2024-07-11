@@ -1,47 +1,81 @@
-<script setup>
-import PostList from "./components/PostList.vue";
-import TimeSeriesChart from "./components/TimeSeriesChart.vue";
-import { store } from "./store.js";
-</script>
-
-<script>
-export default {
-  data() {
-    return {
-      options: [
-        { text: "fan", value: "fan" },
-        { text: "stadium", value: "stadium" },
-        { text: "branded", value: "branded_without_fans" },
-      ],
-    };
-  },
-};
-</script>
-
 <template>
-  <select
-    v-model="store.postType"
-    @change="store.setPostType($event.target.value)"
-  >
-    <option v-for="option in options" v-bind:value="option.value">
-      {{ option.text }}
-    </option>
-  </select>
-  <PostList />
-  <TimeSeriesChart />
+  <a-layout style="min-height: 100vh">
+    <a-layout-sider v-model:collapsed="collapsed" collapsible>
+      <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
+        <a-menu-item key="1">
+          <pie-chart-outlined />
+          <span>Dashboard</span>
+        </a-menu-item>
+        <a-sub-menu key="sub1">
+          <template #title>
+            <span>
+              <user-outlined />
+              <span>User</span>
+            </span>
+          </template>
+          <a-menu-item key="3">Tom</a-menu-item>
+          <a-menu-item key="4">Bill</a-menu-item>
+          <a-menu-item key="5">Alex</a-menu-item>
+        </a-sub-menu>
+        <a-sub-menu key="sub2">
+          <template #title>
+            <span>
+              <team-outlined />
+              <span>Team</span>
+            </span>
+          </template>
+          <a-menu-item key="6">Team 1</a-menu-item>
+          <a-menu-item key="8">Team 2</a-menu-item>
+        </a-sub-menu>
+        <a-menu-item key="9">
+          <file-outlined />
+          <span>File</span>
+        </a-menu-item>
+      </a-menu>
+    </a-layout-sider>
+    <a-layout>
+      <!-- <a-layout-header style="background: #fff; padding: 0" /> -->
+      <a-layout-content style="margin: 0 16px">
+        <a-breadcrumb style="margin: 16px 0"> </a-breadcrumb>
+        <div
+          :style="{ padding: '24px', background: '#fff', minHeight: '360px' }"
+        >
+          <Dashboard />
+        </div>
+      </a-layout-content>
+      <a-layout-footer style="text-align: center">
+        Dashboard ©2024 Created by Mengyan
+      </a-layout-footer>
+    </a-layout>
+  </a-layout>
 </template>
 
+<script lang="ts" setup>
+import {
+  PieChartOutlined,
+  DesktopOutlined,
+  UserOutlined,
+  TeamOutlined,
+  FileOutlined,
+} from "@ant-design/icons-vue";
+import Dashboard from "./components/Dashboard.vue";
+import { ref } from "vue";
+const collapsed = ref<boolean>(false);
+const selectedKeys = ref<string[]>(["1"]);
+</script>
+
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+#components-layout-demo-side .logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.3);
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+.site-layout .site-layout-background {
+  background: #fff;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+[data-theme="dark"] .site-layout .site-layout-background {
+  background: #141414;
 }
 </style>
