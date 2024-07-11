@@ -1,4 +1,4 @@
-from posts.models import Post
+from ...models import Post
 import requests
 import os
 from dotenv import load_dotenv
@@ -15,7 +15,7 @@ def get_data(cursor, post_type):
 
     response = requests.get(os.getenv("API"), params=params, headers={'authorization': 'Bearer ' + os.getenv("TOKEN")})
     data = response.json()
-    print(len(data))
+    print(len(data['posts']))
         
     for each in data['posts']:
         sentiment = sentiment_pipeline(each['original_description'])
